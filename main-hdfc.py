@@ -21,9 +21,9 @@ div = soup.find_all('div', attrs={"data-pid":"widget-hdfc-invest-advisory-917461
 
 table = div.find("table")
 # print(table.find("tr"))
-tr = table.find("tr")
+heading = table.find("tr")
 
-for items in tr:
+for items in heading:
     try:
         list_header.append(items.get_text())
     except:
@@ -40,5 +40,22 @@ for element in HTML_data:
             continue
     data.append(sub_data)
 
-dataFrame = pd.DataFrame(data = data, columns = list_header)
-dataFrame.to_csv('hdfc.csv')
+
+
+# dataFrame = pd.DataFrame(data = data, columns = list_header)
+# dataFrame.to_csv('hdfc.csv')
+
+# Extract MCLR rates
+mclr_table = table
+mclr_rows = HTML_data  # skip header row
+mclr_data = {}
+for row in mclr_rows:
+    cols = row.find_all("td")
+    tenor = cols[0].text.strip()
+    rate = cols[1].text.strip()
+    mclr_data[tenor] = rate
+
+# Print MCLR rates
+print("HDFC MCLR Rates:")
+for tenor, rate in mclr_data.items():
+    print(tenor, ":", rate)
